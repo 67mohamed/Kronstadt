@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
-
 import screen.gameScreen;
 
 import com.badlogic.gdx.Gdx;
@@ -17,7 +16,10 @@ public class gameClass extends Game {
 	
 	@Override
 	public void create () {
+		gameScreen inputProcessor = new gameScreen();
+		Gdx.input.setInputProcessor(inputProcessor);
 		setScreen(new gameScreen());
+		render();
 		/*
 		batch = new SpriteBatch();
 		img = new Texture("kronstadt.jpg");
@@ -25,15 +27,8 @@ public class gameClass extends Game {
 	}
 	
 	
-	/*
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-		
+	public void render(){super.render();}
+	public void one(){
+		System.out.println("one was hit");
 	}
-	*/
 }
