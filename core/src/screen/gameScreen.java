@@ -1,6 +1,6 @@
 package screen;
 
-import text.sailorText;
+import text.sailor;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +32,7 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 	public String text = "Not Working";
 	private OrthographicCamera camera;
 	gameClass gc = new gameClass();
-	sailorText st = new sailorText();
+	sailor st = new sailor();
 	
 	
 
@@ -43,8 +43,10 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 	private Stage stage; 
 	SpriteBatch batch = new SpriteBatch();
 	Texture img=new Texture("kronstadt.jpg");
+	Texture attack = new Texture("attack.png");
 	Texture orange = new Texture("orange1.png");
 	BitmapFont font = new BitmapFont();
+	Boolean didAttack = false;
 	
 	
 	@Override
@@ -55,24 +57,34 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		switch (keycode){
 		
 			case Keys.NUM_1:
-				st.addSailors(1);
-				st.setText(st.getSailors(1));
+				if(didAttack!=true){
+					st.addSailors(1);
+					st.setText(st.getSailors(1));
+				}
 				break;
 			case Keys.NUM_2:
-				st.addSailors(2);
-				st.setText(st.getSailors(2));
+				if(didAttack!=true){
+					st.addSailors(2);
+					st.setText(st.getSailors(2));
+				}
 				break;
 			case Keys.NUM_3:
-				st.addSailors(3);
-				st.setText(st.getSailors(3));
+				if(didAttack!=true){
+					st.addSailors(3);
+					st.setText(st.getSailors(3));
+				}
 				break;
 			case Keys.NUM_4:
-				st.addSailors(4);
-				st.setText(st.getSailors(4));
+				if(didAttack!=true){
+					st.addSailors(4);
+					st.setText(st.getSailors(4));
+				}
 				break;
 			case Keys.NUM_5:
-				st.addSailors(5);
-				st.setText(st.getSailors(5));
+				if(didAttack!=true){
+					st.addSailors(5);
+					st.setText(st.getSailors(5));
+				}
 				break;
 				
 		}
@@ -84,13 +96,48 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		// TODO Auto-generated method stub
 		//return super.touchDown(screenX, screenY, pointer, button);
 		System.out.println("Clicked at :" + screenX  +" "+ screenY);
+		
+		//Attack
+		if((screenX>=601 && screenX <= 800) && (screenY>=535 && screenY <= 620)){
+			st.attack();
+			didAttack=true;
+
+		}
+		//sailor position one
+		if((screenX>=140 && screenX <= 205) && (screenY>=150 && screenY <= 215)){
+			st.addSailors(1);
+			st.setText(st.getSailors(1));
+		}
+		//sailor position two
+		if((screenX>=182 && screenX <= 192) && (screenY>=279 && screenY <= 289)){
+			st.addSailors(2);
+			st.setText(st.getSailors(2));
+}
+		//sailor position three
+				if((screenX>=305 && screenX <= 315) && (screenY>=325 && screenY <= 335)){
+					st.addSailors(3);
+					st.setText(st.getSailors(3));
+		}
+		//sailor position four
+		if((screenX>=333 && screenX <= 343) && (screenY>=282 && screenY <= 292)){
+			st.addSailors(4);
+			st.setText(st.getSailors(4));
+		}
+		
+		//sailor position five
+		if((screenX>=305 && screenX <= 315) && (screenY>=177 && screenY <= 187)){
+			st.addSailors(5);
+			st.setText(st.getSailors(5));
+		}
+		
 		return true;
 	}
 	
 	
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 0);
+		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, 0, 0);
@@ -101,6 +148,8 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		batch.draw(orange, 300, 280);
 		batch.draw(orange, 300, 425);
 		batch.draw(orange, 325, 325);
+		
+		batch.draw(attack, 600, 0);
 		
 		
 		font.draw(batch, "Position 1 :"+st.getSailors(1), 10, 620);
@@ -115,6 +164,8 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		font.draw(batch, "Position 4 :"+st.getRed(4), 500, 560);
 		font.draw(batch, "Position 5 :"+st.getRed(5), 500, 540);
 		
+		
+		
 		/*
 		batch.draw(orange, 100, 100);
 		batch.draw(orange, 200, 200);
@@ -125,6 +176,48 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		*/
 		
 		batch.end();
+		
+		
+		for(int x=1; x<6;x++){
+			if(st.die()==true){
+				if(st.getSailorsInt(x)!=0 && st.getRedInt(x)!=0){
+					//Attack Logic Goes Here
+					System.out.println(Integer.toString(x));
+					
+					st.killSailors(x);
+					
+					System.out.println(st.getSailors(x));
+			
+					
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				}
+			}else if(st.die()==false){
+				if(st.getSailorsInt(x)!=0 && st.getRedInt(x)!=0){
+					//Attack Logic Goes Here
+					System.out.println(Integer.toString(x));
+					
+					st.killRed(x);
+					
+					System.out.println(st.getRed(x));
+					
+					
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				}
+			}
+		}
+		
 		
 	}
 

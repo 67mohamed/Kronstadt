@@ -1,7 +1,7 @@
 package text;
 
 
-public class sailorText {
+public class sailor {
 	static String x = "Fun";
 	static int[ ] spos = { 0, 0, 0, 0, 0, 0 };
 	static int[ ] rpos = { 0, 0, 0, 0, 0, 0 };
@@ -19,11 +19,23 @@ public class sailorText {
 		int x = spos[position];
 		return Integer.toString(x);
 	}
+	public static int getSailorsInt(int position){
+		int x = spos[position];
+		return x;
+	}
 	
 	public static void addSailors(int position){
 		if(spos[1]+spos[2]+spos[3]+spos[4]+spos[5]<11000){
 		spos[position] = spos[position]+1000;
 		}
+	}
+	
+	public static void killSailors(int position){
+		spos[position]=spos[position]-1;
+	}
+	
+	public static void killRed(int position){
+		rpos[position]=rpos[position]-1;
 	}
 	
 	public static void addRed(int position){
@@ -35,6 +47,33 @@ public class sailorText {
 	public static String getRed(int position){
 		int x = rpos[position];
 		return Integer.toString(x);
+	}
+	
+	public static int getRedInt(int position){
+		int x = rpos[position];
+		return x;
+	}
+
+	public void attack() {
+		// TODO Auto-generated method stub
+		System.out.println("Attack");
+		for(int x = 0; x<6; x++){
+			rpos[x]=6000;
+		}
+		
+		}	
+		
+		
+	
+	
+	public boolean die(){
+		int x =(int) ((Math.random() * 3) + 1);
+		if(x==1){
+			return false;
+		}else{
+			return true;
+		}
+		
 	}
 
 }
