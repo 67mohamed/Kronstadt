@@ -10,3 +10,6 @@ public class DesktopLauncher {
 		new LwjglApplication(new gameClass(), "Kronstadt Rises Up",800,620);
 	}
 }
+
+//static int[ ] scordX = { 0, 135, 175, 300, 300, 325 };
+//static int[ ] scordY = { 0, 400, 325, 280, 425, 325 };

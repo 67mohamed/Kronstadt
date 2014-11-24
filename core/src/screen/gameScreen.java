@@ -44,9 +44,8 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 	SpriteBatch batch = new SpriteBatch();
 	Texture img=new Texture("kronstadt.jpg");
 	Texture attack = new Texture("attack.png");
-	Texture orange = new Texture("orange1.png");
 	BitmapFont font = new BitmapFont();
-	Boolean didAttack = false;
+
 	
 	
 	@Override
@@ -54,36 +53,46 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		// TODO Auto-generated method stub
 		//return super.keyDown(keycode);
 		System.out.println("Button");
-		switch (keycode){
 		
+		switch (keycode){
+			case Keys.ENTER:
+				if(st.getEnter()==false){
+					st.setEnter();
+					st.attack();
+				}
+				
 			case Keys.NUM_1:
-				if(didAttack!=true){
+				if(st.didAttack()!=true){
 					st.addSailors(1);
 					st.setText(st.getSailors(1));
+					
 				}
 				break;
 			case Keys.NUM_2:
-				if(didAttack!=true){
+				if(st.didAttack()!=true){
 					st.addSailors(2);
 					st.setText(st.getSailors(2));
 				}
 				break;
 			case Keys.NUM_3:
-				if(didAttack!=true){
+				if(st.didAttack()!=true){
 					st.addSailors(3);
 					st.setText(st.getSailors(3));
 				}
 				break;
+				
+			//Switching of four and five is done to rectify counting issue 
+			//that came about when setting up the UI	
 			case Keys.NUM_4:
-				if(didAttack!=true){
-					st.addSailors(4);
-					st.setText(st.getSailors(4));
+				if(st.didAttack()!=true){
+					st.addSailors(5);
+					st.setText(st.getSailors(5));
 				}
 				break;
 			case Keys.NUM_5:
-				if(didAttack!=true){
-					st.addSailors(5);
-					st.setText(st.getSailors(5));
+				if(st.didAttack()!=true){
+					st.addSailors(4);
+					st.setText(st.getSailors(4));
 				}
 				break;
 				
@@ -98,36 +107,48 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		System.out.println("Clicked at :" + screenX  +" "+ screenY);
 		
 		//Attack
-		if((screenX>=601 && screenX <= 800) && (screenY>=535 && screenY <= 620)){
-			st.attack();
-			didAttack=true;
-
+		if(st.getClickAttack()==false){
+			if((screenX>=601 && screenX <= 800) && (screenY>=535 && screenY <= 620)){
+				st.attack();
+				st.setClickAttack();
+			}
 		}
+		
 		//sailor position one
 		if((screenX>=140 && screenX <= 205) && (screenY>=150 && screenY <= 215)){
-			st.addSailors(1);
-			st.setText(st.getSailors(1));
+			if(st.didAttack()!=true){
+				st.addSailors(1);
+				st.setText(st.getSailors(1));
+			}
 		}
 		//sailor position two
 		if((screenX>=182 && screenX <= 192) && (screenY>=279 && screenY <= 289)){
-			st.addSailors(2);
-			st.setText(st.getSailors(2));
+			if(st.didAttack()!=true){
+				st.addSailors(2);
+				st.setText(st.getSailors(2));
+			}
 }
 		//sailor position three
-				if((screenX>=305 && screenX <= 315) && (screenY>=325 && screenY <= 335)){
-					st.addSailors(3);
-					st.setText(st.getSailors(3));
+		if((screenX>=305 && screenX <= 315) && (screenY>=325 && screenY <= 335)){
+			if(st.didAttack()!=true){
+				st.addSailors(3);
+				st.setText(st.getSailors(3));
+			}
 		}
 		//sailor position four
 		if((screenX>=333 && screenX <= 343) && (screenY>=282 && screenY <= 292)){
-			st.addSailors(4);
-			st.setText(st.getSailors(4));
+			if(st.didAttack()!=true){
+				st.addSailors(5);
+				st.setText(st.getSailors(5));
+			}
 		}
 		
 		//sailor position five
 		if((screenX>=305 && screenX <= 315) && (screenY>=177 && screenY <= 187)){
-			st.addSailors(5);
-			st.setText(st.getSailors(5));
+			if(st.didAttack()!=true){
+				st.addSailors(4);
+				st.setText(st.getSailors(4));
+			}
 		}
 		
 		return true;
@@ -143,11 +164,24 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		batch.draw(img, 0, 0);
 		
 		
-		batch.draw(orange, 135, 400);
-		batch.draw(orange, 175, 325);
-		batch.draw(orange, 300, 280);
-		batch.draw(orange, 300, 425);
-		batch.draw(orange, 325, 325);
+		Texture orange1 = new Texture(st.getSailorImage1());
+		Texture orange2 = new Texture(st.getSailorImage2());
+		Texture orange3 = new Texture(st.getSailorImage3());
+		Texture orange5 = new Texture(st.getSailorImage4());
+		Texture orange4 = new Texture(st.getSailorImage5());
+		
+		Texture red1 = new Texture(st.getRedImage(1));
+		Texture red2 = new Texture(st.getRedImage(2));
+		Texture red3 = new Texture(st.getRedImage(3));
+		Texture red4 = new Texture(st.getRedImage(4));
+		Texture red5 = new Texture(st.getRedImage(5));
+		
+		
+		batch.draw(orange1, st.getX(1), st.getY(1));
+		batch.draw(orange2, st.getX(2), st.getY(2));
+		batch.draw(orange3, st.getX(3), st.getY(3));
+		batch.draw(orange5, st.getX(4), st.getY(4));
+		batch.draw(orange4, st.getX(5), st.getY(5));
 		
 		batch.draw(attack, 600, 0);
 		
@@ -155,24 +189,30 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		font.draw(batch, "Position 1 :"+st.getSailors(1), 10, 620);
 		font.draw(batch, "Position 2 :"+st.getSailors(2), 10, 600);
 		font.draw(batch, "Position 3 :"+st.getSailors(3), 10, 580);
-		font.draw(batch, "Position 4 :"+st.getSailors(4), 10, 560);
-		font.draw(batch, "Position 5 :"+st.getSailors(5), 10, 540);
+		font.draw(batch, "Position 4 :"+st.getSailors(5), 10, 560);
+		font.draw(batch, "Position 5 :"+st.getSailors(4), 10, 540);
+		font.draw(batch, "Total         :"+st.getTotalSailors(), 10, 520);
 		
 		font.draw(batch, "Position 1 :"+st.getRed(1), 500, 620);
 		font.draw(batch, "Position 2 :"+st.getRed(2), 500, 600);
 		font.draw(batch, "Position 3 :"+st.getRed(3), 500, 580);
-		font.draw(batch, "Position 4 :"+st.getRed(4), 500, 560);
-		font.draw(batch, "Position 5 :"+st.getRed(5), 500, 540);
+		font.draw(batch, "Position 4 :"+st.getRed(5), 500, 560);
+		font.draw(batch, "Position 5 :"+st.getRed(4), 500, 540);
+		font.draw(batch, "Total         :"+st.getTotalRed(), 500, 520);
 		
-		
-		
+		batch.draw(red1, st.getRedX(1), st.getRedY(1));
+		batch.draw(red2, st.getRedX(2), st.getRedY(2));
+		batch.draw(red3, st.getRedX(3), st.getRedY(3));
+		batch.draw(red4, st.getRedX(4), st.getRedY(4));
+		batch.draw(red5, st.getRedX(5), st.getRedY(5));
+
 		/*
-		batch.draw(orange, 100, 100);
-		batch.draw(orange, 200, 200);
-		batch.draw(orange, 300, 300);
-		batch.draw(orange, 400, 400);
-		batch.draw(orange, 500, 500);
-		batch.draw(orange, 600, 600);
+		batch.draw(orange1, 100, 100);
+		batch.draw(orange1, 200, 200);
+		batch.draw(orange1, 300, 300);
+		batch.draw(orange1, 400, 400);
+		batch.draw(orange1, 500, 500);
+		batch.draw(orange1, 600, 600);
 		*/
 		
 		batch.end();
@@ -190,7 +230,7 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 			
 					
 					try {
-						Thread.sleep(10);
+						Thread.sleep(1);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -279,5 +319,7 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 
 }
