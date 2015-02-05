@@ -30,21 +30,17 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 
 
 	public String text = "Not Working";
-	private OrthographicCamera camera;
+
 	gameClass gc = new gameClass();
 	sailor st = new sailor();
-	
-	
 
-
-	private Body ball;
-	private BodyDef bodyDef;
-	private FixtureDef ballFixture;
-	private Stage stage; 
 	SpriteBatch batch = new SpriteBatch();
-	Texture img=new Texture("kronstadt.jpg");
+	Texture img=new Texture("kronstadt.png");
 	Texture attack = new Texture("attack.png");
+	Texture yes = new Texture("yes.png");
+	Texture no = new Texture("no.png");
 	BitmapFont font = new BitmapFont();
+	int counterForMain=0;
 
 	
 	
@@ -95,6 +91,18 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 					st.setText(st.getSailors(4));
 				}
 				break;
+			case Keys.DPAD_UP:
+				st.speedUp();
+				break;
+			case Keys.DPAD_DOWN:
+				st.slowDown();
+				break;
+			case Keys.DPAD_LEFT:
+				st.decreaseDeath();
+				break;
+			case Keys.DPAD_RIGHT:
+				st.increaseDeath();
+				break;
 				
 		}
 		return true;
@@ -112,6 +120,16 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 				st.attack();
 				st.setClickAttack();
 			}
+		}
+		
+		//Yes Button
+		if((screenX>=405 && screenX <= 435) && (screenY>=525 && screenY <= 560)){
+			st.choseYes();
+		}
+		
+		//No Button
+		if((screenX>=455 && screenX <= 485) && (screenY>=533 && screenY <= 593)){
+			st.choseNo();
 		}
 		
 		//sailor position one
@@ -162,8 +180,11 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, 0, 0);
+		gameClass gc = new gameClass();
 		
-		
+		if(st.gameOver()){
+			gc.gameOverLaunch();
+		}
 		Texture orange1 = new Texture(st.getSailorImage1());
 		Texture orange2 = new Texture(st.getSailorImage2());
 		Texture orange3 = new Texture(st.getSailorImage3());
@@ -176,15 +197,37 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		Texture red4 = new Texture(st.getRedImage(4));
 		Texture red5 = new Texture(st.getRedImage(5));
 		
-		
+		counterForMain++;
 		batch.draw(orange1, st.getX(1), st.getY(1));
 		batch.draw(orange2, st.getX(2), st.getY(2));
 		batch.draw(orange3, st.getX(3), st.getY(3));
 		batch.draw(orange5, st.getX(4), st.getY(4));
 		batch.draw(orange4, st.getX(5), st.getY(5));
 		
-		batch.draw(attack, 600, 0);
+		if(st.didAttack() == false){
+			batch.draw(attack, 600, 0);
+		}
 		
+		
+		
+		
+		
+		batch.draw(red1, st.getRedX(1), st.getRedY(1));
+		batch.draw(red2, st.getRedX(2), st.getRedY(2));
+		batch.draw(red3, st.getRedX(3), st.getRedY(3));
+		batch.draw(red4, st.getRedX(4), st.getRedY(4));
+		batch.draw(red5, st.getRedX(5), st.getRedY(5));
+		
+		font.draw(batch, st.getSpeed(), 400,210);
+		font.draw(batch, st.getEffeciency(), 400, 180);
+		st.moveTime();
+		
+		font.draw(batch, st.getSituation(), 400, 150);
+		
+		if(st.keepChecks()){
+			batch.draw(yes, 400,  50);
+			batch.draw(no,  450,  50);
+		}
 		
 		font.draw(batch, "Position 1 :"+st.getSailors(1), 10, 620);
 		font.draw(batch, "Position 2 :"+st.getSailors(2), 10, 600);
@@ -199,12 +242,8 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 		font.draw(batch, "Position 4 :"+st.getRed(5), 500, 560);
 		font.draw(batch, "Position 5 :"+st.getRed(4), 500, 540);
 		font.draw(batch, "Total         :"+st.getTotalRed(), 500, 520);
+		//font.draw(batch, Integer.toString(counterForMain), 500, 480);
 		
-		batch.draw(red1, st.getRedX(1), st.getRedY(1));
-		batch.draw(red2, st.getRedX(2), st.getRedY(2));
-		batch.draw(red3, st.getRedX(3), st.getRedY(3));
-		batch.draw(red4, st.getRedX(4), st.getRedY(4));
-		batch.draw(red5, st.getRedX(5), st.getRedY(5));
 
 		/*
 		batch.draw(orange1, 100, 100);
@@ -222,11 +261,11 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 			if(st.die()==true){
 				if(st.getSailorsInt(x)!=0 && st.getRedInt(x)!=0){
 					//Attack Logic Goes Here
-					System.out.println(Integer.toString(x));
+					//System.out.println(Integer.toString(x));
 					
 					st.killSailors(x);
 					
-					System.out.println(st.getSailors(x));
+					//System.out.println(st.getSailors(x));
 			
 					
 					try {
@@ -240,11 +279,11 @@ public class gameScreen extends InputAdapter implements Screen, ApplicationListe
 			}else if(st.die()==false){
 				if(st.getSailorsInt(x)!=0 && st.getRedInt(x)!=0){
 					//Attack Logic Goes Here
-					System.out.println(Integer.toString(x));
+					//System.out.println(Integer.toString(x));
 					
 					st.killRed(x);
 					
-					System.out.println(st.getRed(x));
+					//System.out.println(st.getRed(x));
 					
 					
 					try {

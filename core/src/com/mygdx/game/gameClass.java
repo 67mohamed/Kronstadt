@@ -20,15 +20,18 @@ public class gameClass extends Game {
 		Gdx.input.setInputProcessor(inputProcessor);
 		setScreen(new gameScreen());
 		render();
-		/*
-		batch = new SpriteBatch();
-		img = new Texture("kronstadt.jpg");
-		*/
 	}
 	
 	
 	public void render(){super.render();}
 	public void one(){
 		System.out.println("one was hit");
+	}
+	
+	public void gameOverLaunch(){
+		gameScreen inputProcessor = new gameScreen();
+		Gdx.input.setInputProcessor(inputProcessor);
+		setScreen(new gameOverScreen());
+		render();
 	}
 }

@@ -5,21 +5,147 @@ import screen.gameScreen;
 
 public class sailor {
 	static String x = "Fun";
+	//sets the speed of the animation. bigger number slower animation
+	static int speed = 6;
+	static int counter = 0, deathCounter = 0, deathSpeed=6, situationCounter=-1, timeCounter=0;
 	static int[ ] spos = { 0, 0, 0, 0, 0, 0 };
 	static int[ ] rpos = { 0, 0, 0, 0, 0, 0 };
+	static String[] situations = {"Should Trotsky be sent to the battlefield?",
+								  "Should you give the sailors letters from their families?", 
+	                              "Should rations be given out to the Red Army?",
+	                              "Should the Red Army deploy their fog machine?",
+	                              "Should the Red Army soldier put on snow camouflage?",
+	                              "Should the sailors be told about the promised foreign aid?"};
 	static int[ ] scordX = { 0, 135, 175, 300, 300, 325 };
 	static int[ ] scordY = { 0, 400, 325, 280, 425, 325 };
 	static int[]  rcordX = { 0,  40, 150, 280, 700, 700 };
 	static int[]  rcordY = { 0,  50,  70,  50, 550, 400 };
 	static boolean didAttack, didAdjust, clickAttack = false;
 	static int mcount=0;
+	static String situationString=" ";
 	
-	public Boolean getEnter(){
-		return clickAttack;
+	public boolean areAllDead(){
+		if((rpos[0]==0 && rpos[1]==0 && rpos[2]==0 && rpos[3]==0 && rpos[4]==0 && rpos[5]==0) ||
+		   (spos[0]==0 && spos[1]==0 && spos[2]==0 && spos[3]==0 && spos[4]==0 && spos[5]==0)	){
+			return true;
+		}else{
+			return false;
+		}
 	}
+	
+	public boolean keepChecks(){
+		if(situationString==" "){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	public void choseYes() {
+		if(situationString==" "){
+			
+		}else{
+			situationString = " ";
+			if(timeCounter>300){
+				if(situationCounter%2==0){
+					//bad for sailors
+					decreaseDeath();
+				}else if(situationCounter%2==1){
+					//good for sailors
+					increaseDeath();
+				}
+			}
+		}
+		
+		
+	}
+	
+	public void choseNo(){
+		if(situationString ==" "){
+			
+		}else{
+			situationString = " ";
+			if(timeCounter>300){
+				if(situationCounter%2==0){
+					//good for sailors
+					increaseDeath();
+				}else if(situationCounter%2==1){
+					//bad for sailors
+					decreaseDeath();
+				}
+			}
+		}
+		
+	}
+	
+	public String getSituation(){
+		if(didAttack()){
+			if(timeCounter<1500){
+				if(situationString ==" " && timeCounter%100 == 0 &&(areAllDead()==false)){
+					situationCounter++;
+					if(situationCounter >= situations.length){
+						return situationString;
+					}else{
+						situationString = situations[situationCounter];
+						return situationString;
+					}
+					
+				}
+				else{
+					return situationString;
+				}
+			}else{
+				return situationString;
+			}
+		}
+		else{
+			situationString = " ";
+			return situationString;
+		}
+		
+		
+	}
+	
+	public void moveTime(){
+		timeCounter++;
+	}
+	public Boolean getEnter(){return clickAttack;}
 	public void setEnter(){
 		clickAttack=true;
 	}
+	public void speedUp(){
+		if(speed>1){
+			speed--;
+		}
+	}
+	public void slowDown(){
+		if(speed<10){
+			speed++;
+		}
+		
+	}
+	
+	public void increaseDeath(){
+		deathSpeed++;
+	}
+	
+	public void decreaseDeath(){
+		if(deathSpeed>1){
+			deathSpeed--;
+		}
+		
+	}
+	
+	public String getSpeed(){
+		String s = "The Red Army's speed      : "+Integer.toString(10-speed);
+		return s;
+	}
+	
+	public String getEffeciency(){
+		String s = "The sailor's effectiveness : "+Integer.toString(deathSpeed);
+		return s;
+	}
+	
 	public Boolean getClickAttack(){
 		return clickAttack;
 	}
@@ -52,7 +178,7 @@ public class sailor {
 	}
 	
 	public static void addSailors(int position){
-		if(spos[1]+spos[2]+spos[3]+spos[4]+spos[5]<11000){
+		if(spos[1]+spos[2]+spos[3]+spos[4]+spos[5]<17000){
 		spos[position] = spos[position]+1000;
 		}
 	}
@@ -67,7 +193,7 @@ public class sailor {
 	}
 	
 	public static void addRed(int position){
-		if(rpos[1]+rpos[2]+rpos[3]+rpos[4]+rpos[5]<11000){
+		if(rpos[1]+rpos[2]+rpos[3]+rpos[4]+rpos[5]<17000){
 		rpos[position] = rpos[position]+1000;
 		}
 	}
@@ -107,26 +233,90 @@ public class sailor {
 		mcount++;
 		switch(x){
 			case 1:
-				if(mcount%10==0){
-					System.out.println("HEYYYYY");
-					rcordX[x]++;
+				if(mcount%speed==0){
+					//System.out.println("HEYYYYY");
+					counter++;
+					if(rcordY[x]>400){
+						spos[x]=0;
+					}if(counter<90){
+						if(counter%2==1){
+							rcordX[x]++;
+						}else{
+							
+						}
+					}else{
+						rcordX[x]++;
+					}
+
 					rcordY[x]=rcordY[x]+3;
 				}
 				break;
 			case 2:
+				if(rcordY[x]>325){
+					spos[x]=0;
+				}if(mcount%speed==0){
+					//System.out.println("HEYYYYY");
+					counter++;
+					
+					rcordY[x]++;
+					
+					
+
+					rcordY[x]=rcordY[x]+2;
+				}
+				break;
+			case 3:
+				if(rcordY[x]>280){
+					spos[x]=0;
+				}if(mcount%speed==0){
+					//System.out.println("HEYYYYY");
+					counter++;					
+					rcordY[x]++;
+					rcordY[x]=rcordY[x]+2;
+				}
+				break;
+			case 4:
+				if(rcordY[x]<425){
+					spos[x]=0;
+				}if(mcount%speed==0){
+					//System.out.println("HEYYYYY");
+					counter++;					
+					rcordY[x]--;
+					rcordX[x]=rcordX[x]-3;
+				}
+				break;
+			case 5:
+				if(rcordX[x]<325){
+					spos[x]=0;
+				}if(mcount%speed==0){
+					//System.out.println("HEYYYYY");
+					counter++;					
+					rcordY[x]--;
+					rcordX[x]=rcordX[x]-5;
+				}
 				break;
 		}
 		
 		
 		
 	}
+	
 	public boolean die(){
-		int x =(int) ((Math.random() * 3) + 1);
+		/*
+		deathCounter++;
+		if(deathCounter%deathSpeed==0){
+			return true;
+		}else{
+			return false;
+		}
+		*/
+		int x =(int) ((Math.random() * deathSpeed) + 1);
 		if(x==1){
 			return true;
 		}else{
 			return false;
 		}
+		
 		
 	}
 
@@ -174,7 +364,7 @@ public class sailor {
 			x = "orange10.png";
 			scordX[pos]=110;
 			scordY[pos]=373;
-		}if(spos[pos]>=10000 && spos[pos]<=11000){
+		}if(spos[pos]>=10000 && spos[pos]<=17000){
 			x = "orange11.png";
 			scordX[pos]=107;
 			scordY[pos]=370;
@@ -228,7 +418,7 @@ public class sailor {
 			x = "orange10.png";
 			scordX[pos]=148;
 			scordY[pos]=298;
-		}if(spos[pos]>=10000 && spos[pos]<=11000){
+		}if(spos[pos]>=10000 && spos[pos]<=17000){
 			x = "orange11.png";
 			scordX[pos]=145;
 			scordY[pos]=295;
@@ -280,7 +470,7 @@ public class sailor {
 			x = "orange10.png";
 			scordX[pos]=273;
 			scordY[pos]=263;
-		}if(spos[pos]>=10000 && spos[pos]<=11000){
+		}if(spos[pos]>=10000 && spos[pos]<=17000){
 			x = "orange11.png";
 			scordX[pos]=270;
 			scordY[pos]=260;
@@ -332,7 +522,7 @@ public class sailor {
 			x = "orange10.png";
 			scordX[pos]=273;
 			scordY[pos]=398;
-		}if(spos[pos]>=10000 && spos[pos]<=11000){
+		}if(spos[pos]>=10000 && spos[pos]<=17000){
 			x = "orange11.png";
 			scordX[pos]=270;
 			scordY[pos]=395;
@@ -385,7 +575,7 @@ public class sailor {
 			x = "orange10.png";
 			scordX[pos]=298;
 			scordY[pos]=298;
-		}if(spos[pos]>=10000 && spos[pos]<=11000){
+		}if(spos[pos]>=10000 && spos[pos]<=17000){
 			x = "orange11.png";
 			scordX[pos]=295;
 			scordY[pos]=295;
@@ -413,11 +603,11 @@ public class sailor {
 				x = (int) (Math.random()*(men/2));
 				men= men-x;
 				rpos[counter]=x;
-				System.out.println(counter+" "+x);
+				//System.out.println(counter+" "+x);
 			}else{
 				x=men;
 				rpos[counter]=x;
-				System.out.println(counter+" "+x);
+				//System.out.println(counter+" "+x);
 			
 			
 			}
@@ -564,6 +754,7 @@ public class sailor {
 		
 		return str;
 	}
+	
 	public String getTotalRed() {
 		int total=0;
 		for(int x=1; x<6; x++){
@@ -579,9 +770,20 @@ public class sailor {
 		for(int x=1; x<6; x++){
 			total=spos[x]+total;
 		}
-		return Integer.toString(total)+"/11000";
+		return Integer.toString(total)+"/17000";
 	}
 
+	public boolean gameOver(){
+		if(didAttack() == true && rpos[1]==0 && rpos[2]==0 && rpos[3]==0 && rpos[4]==0 && rpos[5]==0){
+			return true;
+		}if(didAttack()==true && spos[1]==0 && spos[2]==0 && spos[3]==0 && spos[4]==0 && spos[5]==0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	
 }
 
 
